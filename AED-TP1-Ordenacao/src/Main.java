@@ -1,6 +1,8 @@
-public class Main {
+import java.util.Arrays;
 
-    public static void main(String[] args) {
+class Main {
+
+    public static void main(String[] args) { //lista de textos recebidos do terminal
 
         System.out.println("=== TP1 - Ordenacao de Inteiros ===");
 
@@ -27,5 +29,17 @@ public class Main {
         System.out.println("Ficheiro: " + ficheiro);
         System.out.println("Quantidade de inteiros: " + quantidade);
         System.out.println("Argumentos validados com sucesso!");
+
+        try {
+            FileManager gestor = new FileManager();
+
+            int[] numeros = gestor.lerTexto(ficheiro, quantidade);
+
+            System.out.println("Numeros lidos: "
+                    + Arrays.toString(numeros));
+
+        } catch (Exception e) {
+            System.out.println("Erro ao ler ficheiro: " + e.getMessage());
+        }
     }
 }
