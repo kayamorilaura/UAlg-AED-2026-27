@@ -3,20 +3,45 @@
 
 public class SortingAlgorithms {
 
-        public void selectionSort(int[] numeros) { 
-            for (int i = 0; i < numeros.length - 1; i++) {
-            int menorIndice = i;   // Assumimos inicialmente que o primeiro número é o menor
+    // SELECTION SORT
+    // Procura o menor número e coloca-o na posição correta.
+    public void selectionSort(int[] numeros) {
 
-                // começamos a procurar a partir da segunda posição < Continuamos até ao fim do array
-            for (int j = i + 1; j < numeros.length; j++) { // j++ para avançar uma posição por vez
-                if (numeros[j] < numeros[menorIndice]) { // compara o elemento atual com o menor encontrado
-                    menorIndice  = j; // atualiza o índice do menor número encontrado
+        for (int i = 0; i < numeros.length - 1; i++) {
+
+            // Assume que o elemento na posição i é o menor
+            int menorIndice = i;
+
+            // Procura o menor na parte ainda não ordenada
+            for (int j = i + 1; j < numeros.length; j++) {
+
+                if (numeros[j] < numeros[menorIndice]) {
+                    menorIndice = j;
                 }
-            }   
+            }
 
-            int temporario = numeros[i]; // guarda o valor do elemento na posição i
-            numeros[i] = numeros[menorIndice]; // coloca o menor número encontrado na posição i
-            numeros[menorIndice] = temporario; // coloca o valor do elemento na posição i
+            // Troca o menor encontrado com o elemento na posição i
+            int temporario = numeros[i];
+            numeros[i] = numeros[menorIndice];
+            numeros[menorIndice] = temporario;
+        }
+    }
+
+    // BUBBLE SORT
+    // Compara elementos vizinhos e troca-os quando necessário.
+    public void bubbleSort(int[] numeros) {
+
+        for (int i = 0; i < numeros.length - 1; i++) {
+
+            for (int j = 0; j < numeros.length - 1 - i; j++) {
+
+                if (numeros[j] > numeros[j + 1]) {
+
+                    int temporario = numeros[j];
+                    numeros[j] = numeros[j + 1];
+                    numeros[j + 1] = temporario;
+                }
+            }
         }
     }
 }

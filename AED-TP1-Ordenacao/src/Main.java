@@ -47,6 +47,10 @@ class Main {
 
             //Cria novo ficheiro com os números ordenados e escreve o array ordenado no ficheiro de saída
             ordenador.selectionSort(numeros); // Ordenar o array
+
+            int[] numerosBubble = gestor.lerTexto(ficheiro, quantidade);
+            ordenador.bubbleSort(numerosBubble);
+            System.out.println("Array ordenado (Bubble Sort): " + Arrays.toString(numerosBubble));
             String ficheiroSaida = "dados/ordenados.txt";
             gestor.escreverTexto(ficheiroSaida, numeros);
             System.out.println("Ficheiro criado: " + ficheiroSaida);
