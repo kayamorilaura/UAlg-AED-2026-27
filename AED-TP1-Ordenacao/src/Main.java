@@ -44,11 +44,23 @@ class Main {
                     + Arrays.toString(numeros));
 
             SortingAlgorithms ordenador = new SortingAlgorithms(); // Cria um objeto da classe SortingAlgorithms
-            
-            ordenador.selectionSort(numeros); // Ordenar o array
 
-            System.out.println("Apos primeira passagem: " // Mostrar o resultado
-                    + Arrays.toString(numeros));
+            //Cria novo ficheiro com os números ordenados e escreve o array ordenado no ficheiro de saída
+            ordenador.selectionSort(numeros); // Ordenar o array
+            String ficheiroSaida = "dados/ordenados.txt";
+            gestor.escreverTexto(ficheiroSaida, numeros);
+            System.out.println("Ficheiro criado: " + ficheiroSaida);
+            System.out.println("Array ordenado (Selection Sort): " + Arrays.toString(numeros));
+
+            // Cria um ficheiro binário com os números ordenados
+            gestor.escreverBinario("dados/ordenados.bin", numeros);
+            System.out.println("Ficheiro binario criado!");
+
+            //teste de ida e volta: escreve inteiros num ficheiro binárip e depois verificamos que continuaram os mesmos
+            int[] numerosBinarios = gestor.lerBinario(
+                    "dados/ordenados.bin", quantidade);
+            System.out.println("Numeros lidos do binario: "
+                    + Arrays.toString(numerosBinarios));
 
 
         } catch (Exception e) {
