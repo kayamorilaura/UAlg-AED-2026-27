@@ -44,4 +44,20 @@ public class SortingAlgorithms {
             }
         }
     }
+
+    public void insertionSort(int[] numeros) {
+
+        for (int i = 1; i < numeros.length; i++) { // comeca em 1 porque o primeiro elemento é na direta e insertSort conta da direita para a esquerda
+
+            int chave = numeros[i]; //Guarda o valor que queremos inserir no lugar correto.
+            int j = i - 1; //j começa no elemento imediatamente anterior.
+
+            while (j >= 0 && numeros[j] > chave) { //Enquanto estiver dentro do array e o número anterior for maior que a chave, deslocamos esse número para a direita
+                numeros[j + 1] = numeros[j]; //Quando encontrarmos a posição certa, colocamos a chave.
+                j--; // diminuir o valor de j em 1
+            }
+
+            numeros[j + 1] = chave;
+        }
+    }
 }

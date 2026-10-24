@@ -66,6 +66,11 @@ class Main {
             System.out.println("Numeros lidos do binario: "
                     + Arrays.toString(numerosBinarios));
 
+            int[] numerosInsertion = gestor.lerTexto(ficheiro, quantidade);
+            ordenador.insertionSort(numerosInsertion);
+            System.out.println("Array ordenado (Insertion Sort): "
+                    + Arrays.toString(numerosInsertion));
+
 
         } catch (Exception e) {
             System.out.println("Erro ao ler ficheiro: " + e.getMessage());
