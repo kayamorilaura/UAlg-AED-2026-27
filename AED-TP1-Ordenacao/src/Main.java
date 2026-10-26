@@ -4,8 +4,10 @@ import java.util.Arrays;
 
 public class Main {
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) { // args array de texto recebida pelo terminal no caso: java -cp out Main dados\numeros.txt 5 Main = args[0]
+//=======================================================
+// INTERPRETAÇÃO DOS VALORES NO TERMINAL
+//=======================================================
         System.out.println("=== TP1 - Ordenacao de Inteiros ===");
 
         // O programa precisa de receber exatamente 2 argumentos.
@@ -40,7 +42,12 @@ public class Main {
             SortingAlgorithms ordenador = new SortingAlgorithms();
 
             // Lê o ficheiro apenas uma vez.
-            int[] numeros = gestor.lerTexto(ficheiro, quantidade);
+            int[] numeros;
+            if (ficheiro.toLowerCase().endsWith(".bin")) {
+                numeros = gestor.lerBinario(ficheiro, quantidade);
+            } else {
+                numeros = gestor.lerTexto(ficheiro, quantidade);
+            }
 
             System.out.println("Ficheiro: " + ficheiro);
             System.out.println("Quantidade: " + quantidade);

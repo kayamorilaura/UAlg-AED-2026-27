@@ -155,30 +155,27 @@ public class Benchmark {
                         csv.printf(
                             java.util.Locale.US,
                             "%d;%s;%d;%.3f%n",
-                            tamanho, nomes[algoritmo],
-                            repeticao, tempo
-                        );
+                            tamanho, nomes[algoritmo], repeticao, tempo);
 
                         System.out.printf(
                             "%s - teste %d: %.3f ms%n",
-                            nomes[algoritmo], repeticao, tempo
-                        );
+                            nomes[algoritmo], repeticao, tempo);
                     }
 
                     double media = soma / repeticoes;
 
                     System.out.printf(
                         "MEDIA %s: %.3f ms%n",
-                        nomes[algoritmo], media
-                    );
+                        nomes[algoritmo], media);
                 }
 
                 // Garante que os dados são escritos no CSV.
-                csv.flush();
+                if (csv.checkError()) {
+                    throw new IOException("Erro ao escrever no CSV.");
+}
             }
 
-            System.out.println("\nResultados guardados em "
-                    + "resultados/benchmark.csv");
+            System.out.println("\nResultados guardados em " + ficheiroCSV.getPath());
 
         } catch (IOException e) {
             System.out.println("Erro ao guardar: " + e.getMessage());
