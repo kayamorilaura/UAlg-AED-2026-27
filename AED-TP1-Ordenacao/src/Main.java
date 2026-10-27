@@ -1,179 +1,184 @@
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class Main {
 
-    public static void main(String[] args) { // args array de texto recebida pelo terminal no caso: java -cp out Main dados\numeros.txt 5 Main = args[0]
-//=======================================================
-// INTERPRETAÇÃO DOS VALORES NO TERMINAL
-//=======================================================
+    public static void main(String[] args) {
+
         System.out.println("=== TP1 - Ordenacao de Inteiros ===");
 
-        // O programa precisa de receber exatamente 2 argumentos.
-        // args[0] = caminho do ficheiro
-        // args[1] = quantidade de inteiros
+        // =================================================
+        // 1. VALIDAR ARGUMENTOS
+        // =================================================
+
+        // O programa deve receber exatamente 2 argumentos:
+        // 1 - Caminho do ficheiro
+        // 2 - Quantidade de inteiros
         if (args.length != 2) {
-            System.out.println("Uso: java Main <ficheiro> <quantidade>");
+            System.out.println(
+                "Uso: java -cp out Main <ficheiro> <quantidade>"
+            );
             return;
         }
 
-        String ficheiro = args[0];
+        String caminho = args[0];
         int quantidade;
 
-        // Converte a quantidade recebida de String para int.
+        // Converter a quantidade de String para int.
         try {
             quantidade = Integer.parseInt(args[1]);
+
         } catch (NumberFormatException e) {
-            System.out.println("Erro: a quantidade deve ser um inteiro.");
+
+            System.out.println(
+                "Erro: a quantidade deve ser um numero inteiro."
+            );
             return;
         }
 
-        // Impede quantidades negativas ou iguais a zero.
+        // Não permitimos quantidades negativas ou zero.
         if (quantidade <= 0) {
-            System.out.println("Erro: a quantidade deve ser positiva.");
+            System.out.println(
+                "Erro: a quantidade deve ser positiva."
+            );
             return;
         }
+
+        // Identificamos o tipo de ficheiro pela extensão.
+        boolean binario = caminho.toLowerCase().endsWith(".bin");
+        boolean texto = caminho.toLowerCase().endsWith(".txt");
+
+        if (!binario && !texto) {
+            System.out.println(
+                "Erro: use um ficheiro .txt ou .bin."
+            );
+            return;
+        }
+
+
+        // =================================================
+        // 2. LER OS INTEIROS
+        // =================================================
 
         try {
-            // Cria os objetos responsáveis pelos ficheiros
-            // e pelos algoritmos de ordenação.
+
+            // Criamos um objeto responsável pelos ficheiros.
             FileManager gestor = new FileManager();
+
+            int[] numeros;
+
+            if (binario) {
+
+                // Leitura de ficheiro binário.
+                numeros = gestor.lerBinario(caminho, quantidade);
+
+            } else {
+
+                // Leitura de ficheiro de texto.
+                numeros = gestor.lerTexto(caminho, quantidade);
+            }
+
+            // Mostramos os valores apenas nos vetores pequenos.
+            // Evitamos imprimir milhares de números.
+            if (quantidade <= 30) {
+                System.out.println(
+                    "Numeros lidos: " + Arrays.toString(numeros)
+                );
+            }
+
+
+            // =================================================
+            // 3. ORDENAR COM QUICK SORT
+            // =================================================
+
             SortingAlgorithms ordenador = new SortingAlgorithms();
 
-            // Lê o ficheiro apenas uma vez.
-            int[] numeros;
-            if (ficheiro.toLowerCase().endsWith(".bin")) {
-                numeros = gestor.lerBinario(ficheiro, quantidade);
-            } else {
-                numeros = gestor.lerTexto(ficheiro, quantidade);
-            }
-
-            System.out.println("Ficheiro: " + ficheiro);
-            System.out.println("Quantidade: " + quantidade);
-
-            // Evita mostrar milhares de números no terminal.
-            if (quantidade <= 20) {
-                System.out.println("Original: "
-                        + Arrays.toString(numeros));
-            }
-
-            // Cada algoritmo precisa de receber os mesmos
-            // números, na mesma ordem inicial.
-            int[] numerosSelection = numeros.clone();
-            int[] numerosBubble = numeros.clone();
-            int[] numerosInsertion = numeros.clone();
-
-            // ==================================================
-            // SELECTION SORT
-            // ==================================================
-
-            // Guarda o instante antes da ordenação.
+            // Guardamos o instante inicial da ordenação.
             long inicio = System.nanoTime();
 
-            ordenador.selectionSort(numerosSelection);
+            // Executamos o algoritmo escolhido.
+            ordenador.quickSort(numeros);
 
-            // Guarda o instante após a ordenação.
+            // Guardamos o instante final.
             long fim = System.nanoTime();
 
-            // Calcula a duração em milissegundos.
-            double tempoSelection = (fim - inicio) / 1_000_000.0;
+            // Convertimos nanossegundos em milissegundos.
+            double tempoMs = (fim - inicio) / 1_000_000.0;
 
-            // ==================================================
-            // BUBBLE SORT
-            // ==================================================
+            System.out.printf(
+                "Tempo Quick Sort: %.3f ms%n",
+                tempoMs
+            );
 
-            inicio = System.nanoTime();
 
-            ordenador.bubbleSort(numerosBubble);
+            // =================================================
+            // 4. PREPARAR O NOVO FICHEIRO
+            // =================================================
 
-            fim = System.nanoTime();
+            // Obtemos apenas o nome do ficheiro original.
+            File entrada = new File(caminho);
+            String nome = entrada.getName();
 
-            double tempoBubble = (fim - inicio) / 1_000_000.0;
+            // Descobrimos a posição do último ponto.
+            int ponto = nome.lastIndexOf('.');
 
-            // ==================================================
-            // INSERTION SORT
-            // ==================================================
+            // Criamos um nome com o sufixo "_ordenado".
+            String nomeSaida =
+                nome.substring(0, ponto)
+                + "_ordenado"
+                + nome.substring(ponto);
 
-            inicio = System.nanoTime();
+            // Criamos a pasta resultados, se necessário.
+            File pastaResultados = new File("resultados");
 
-            ordenador.insertionSort(numerosInsertion);
+            if (!pastaResultados.exists()
+                    && !pastaResultados.mkdirs()) {
 
-            fim = System.nanoTime();
-
-            double tempoInsertion = (fim - inicio) / 1_000_000.0;
-
-            // ==================================================
-            // VERIFICACAO DOS RESULTADOS
-            // ==================================================
-
-            // Compara os três arrays.
-            // Todos devem conter os mesmos números ordenados.
-            boolean iguais =
-                    Arrays.equals(numerosSelection, numerosBubble)
-                    && Arrays.equals(numerosSelection, numerosInsertion);
-
-            // Cria uma referência ordenada usando a biblioteca
-            // Java, apenas para verificar os resultados.
-            int[] referencia = numeros.clone(); //evita que o Bubble Sort ou o Insertion Sort recebam um array já ordenado pelo Selection Sort
-            Arrays.sort(referencia);
-
-            boolean correto =
-                    iguais && Arrays.equals(numerosSelection, referencia);
-
-            if (!correto) {
-                throw new IllegalStateException(
-                        "Os algoritmos produziram resultados incorretos.");
+                throw new IOException(
+                    "Nao foi possivel criar a pasta resultados."
+                );
             }
 
-            System.out.println("\n=== TEMPOS DE EXECUCAO ===");
+            // Caminho completo para o novo ficheiro.
+            String destino = new File(
+                pastaResultados, nomeSaida
+            ).getPath();
 
-            System.out.printf("Selection Sort: %.3f ms%n", tempoSelection);
-            System.out.printf("Bubble Sort:    %.3f ms%n", tempoBubble);
-            System.out.printf("Insertion Sort: %.3f ms%n", tempoInsertion);
 
-            System.out.println("Ordenacao correta: " + correto);
+            // =================================================
+            // 5. ESCREVER O FICHEIRO ORDENADO
+            // =================================================
 
-            if (quantidade <= 20) {
-                System.out.println("Ordenado: "
-                        + Arrays.toString(numerosSelection));
+            if (binario) {
+
+                // Guardamos os inteiros em formato binário.
+                gestor.escreverBinario(destino, numeros);
+
+            } else {
+
+                // Guardamos os inteiros em formato texto.
+                gestor.escreverTexto(destino, numeros);
             }
 
-            // ==================================================
-            // ESCRITA DOS FICHEIROS
-            // ==================================================
-
-            // Cria a pasta de saída, se ainda não existir.
-            File pastaSaida = new File("resultados");
-
-            if (!pastaSaida.exists() && !pastaSaida.mkdirs()) {
-                throw new IllegalStateException(
-                        "Nao foi possivel criar a pasta resultados.");
+            if (quantidade <= 30) {
+                System.out.println(
+                    "Array ordenado: " + Arrays.toString(numeros)
+                );
             }
 
-            String saidaTexto = "resultados/ordenados.txt";
-            String saidaBinario = "resultados/ordenados.bin";
+            System.out.println(
+                "Resultado guardado em: " + destino
+            );
 
-            // Guarda os mesmos inteiros ordenados em dois formatos.
-            gestor.escreverTexto(saidaTexto, numerosSelection);
-            gestor.escreverBinario(saidaBinario, numerosSelection);
+        } catch (IOException | RuntimeException e) {
 
-            // Lê novamente o binário para confirmar
-            // que a escrita e leitura preservaram os dados.
-            int[] verificacaoBinaria =
-                    gestor.lerBinario(saidaBinario, quantidade);
-
-            if (!Arrays.equals(numerosSelection, verificacaoBinaria)) {
-                throw new IllegalStateException(
-                        "Erro na verificacao do ficheiro binario.");
-            }
-
-            System.out.println("\nFicheiro texto: " + saidaTexto);
-            System.out.println("Ficheiro binario: " + saidaBinario);
-            System.out.println("Verificacao binaria: OK");
-
-        } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
+            // Tratamento de erros de leitura, escrita
+            // ou execução.
+            System.err.println(
+                "Erro: " + e.getMessage()
+            );
         }
     }
 }

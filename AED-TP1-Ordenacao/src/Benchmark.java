@@ -42,7 +42,9 @@ public class Benchmark {
         String[] nomes = { //guarda os nomes dos algoritmos nas posições 0, 1 e 2.
             "Selection Sort",
             "Bubble Sort", 
-            "Insertion Sort"
+            "Insertion Sort",
+            "Shell",
+            "Quick"
         };
 
         // Prepara o ficheiro csv na pasta dos resultados.
@@ -92,7 +94,7 @@ public class Benchmark {
                 aquecimento[i] = aquecerRandom.nextInt(100000); //gera valores entre 0 e 99999
             }
 
-            for (int algoritmo = 0; algoritmo < 3; algoritmo++) { // executa uma vez cada algoritmo sem medir o tempo.
+            for (int algoritmo = 0; algoritmo < nomes.length; algoritmo++) { // executa uma vez cada algoritmo sem medir o tempo.
                 int[] copia = aquecimento.clone();
                 ordenar(ordenador, algoritmo, copia); 
             }
@@ -116,7 +118,7 @@ public class Benchmark {
                 Arrays.sort(esperado);  // o Arrays.sort já calculou como deve ser devolvido o resultado nos nossos algoritmos
 
                 // Executa os três algoritmos.
-                for (int algoritmo = 0; algoritmo < 3; algoritmo++) {  // 0 = Selection, 1 = Bubble, 2 = Insertion.
+                for (int algoritmo = 0; algoritmo < nomes.length; algoritmo++) {  // 0 = Selection, 1 = Bubble, 2 = Insertion.
 
                     double soma = 0; //guarda a soma dos 3 tempos de execuções de cada algoritmo
                     for (int repeticao = 1;
@@ -185,26 +187,33 @@ public class Benchmark {
 // MÉTODO AUXILIAR - ESCOLHER O ALGORITMO
 // =======================================================
 
-    // Centraliza a escolha do algoritmo.
-    // 0 = Selection, 1 = Bubble, 2 = Insertion.
-    private static void ordenar(
-            SortingAlgorithms ordenador,
-            int algoritmo,
-            int[] numeros) {
-
-        switch (algoritmo) {
+   
+    // 0 = Selection, 1 = Bubble, 2 = Insertion, 3= Shell 4= Quick
+    private static void ordenar( //QUAL algoritmo vai fazer a ordenação.
+            SortingAlgorithms ordenador, //Recebe um objeto da classe SortingAlgorithms, que possui os métodos selectionSort(), bubbleSort(), ...
+            int algoritmo,  //Recebe um número que identifica o algoritmo escolhido.
+            int[] numeros) {  //Recebe uma referência ao vetor que será ordenado
+    
+        switch (algoritmo) { //else if de varios casos 
             case 0:
                 ordenador.selectionSort(numeros);
-                break;
+                break; // termina a execução do switch
             case 1:
                 ordenador.bubbleSort(numeros);
                 break;
             case 2:
                 ordenador.insertionSort(numeros);
                 break;
-            default:
+            case 3:
+                ordenador.shellSort(numeros);
+                break;
+            case 4:
+                ordenador.quickSort(numeros);
+                break;
+            default: //caso nenhum case seja correspondente
                 throw new IllegalArgumentException(
                     "Algoritmo desconhecido.");
         }
     }
+
 }
